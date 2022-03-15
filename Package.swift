@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.6
 import PackageDescription
 
 let package = Package(
@@ -10,6 +10,7 @@ let package = Package(
     .executable(name: "swiftgen", targets: ["SwiftGen"]),
     .library(name: "SwiftGenCLI", targets: ["SwiftGenCLI"]),
     .library(name: "SwiftGenKit", targets: ["SwiftGenKit"]),
+    .plugin(name: "SwiftGenPlugin", targets: ["SwiftGenPlugin"]),
   ],
   dependencies: [
     .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.6"),
@@ -21,7 +22,7 @@ let package = Package(
     .package(url: "https://github.com/tid-kijyun/Kanna.git", from: "5.2.7")
   ],
   targets: [
-    .target(name: "SwiftGen", dependencies: [
+    .executableTarget(name: "SwiftGen", dependencies: [
       "SwiftGenCLI"
     ]),
     .target(name: "SwiftGenCLI", dependencies: [
@@ -64,7 +65,13 @@ let package = Package(
       .copy("Fixtures/Generated"),
       .copy("Fixtures/Resources"),
       .copy("Fixtures/StencilContexts")
-    ])
+    ]),
+    .plugin(name: "SwiftGenPlugin",
+        capability: .buildTool(),
+        dependencies: [
+            "SwiftGen"
+        ]
+    )
   ],
   swiftLanguageVersions: [.v5]
 )
